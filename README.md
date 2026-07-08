@@ -4,8 +4,7 @@
 
 **데모**: https://geulgyeol.tech
 
-<!-- 📷 사진 자리 1: 메인 화면 (에세이 입력 화면) 스크린샷 → assets/main.png 로 저장 -->
-![메인 화면](assets/main.png)
+<img width="1182" height="941" alt="스크린샷 2026-07-09 003512" src="https://github.com/user-attachments/assets/7204bae3-17f9-4733-a417-0dc6a5607cf3" />
 
 ## 소개
 
@@ -29,9 +28,8 @@
 ③ 최종 리포트
    └─ 총평 · 강점 · 개선점 · 루브릭별 점수와 보정 근거
 ```
+<img width="1240" height="943" alt="스크린샷 2026-07-09 003631" src="https://github.com/user-attachments/assets/7783ca8f-6a47-47f4-8496-5d397ad635aa" />
 
-<!-- 📷 사진 자리 2: 채점 진행 화면 (에이전트가 도구 호출하는 스트리밍 화면) → assets/agent.png -->
-![에이전트 검증 화면](assets/agent.png)
 
 ## 채점 기준 (8개 루브릭)
 
@@ -48,8 +46,8 @@
 
 각 루브릭은 1~9점으로 채점되며, 사이트의 **채점기준** 페이지에서 단계별 기준을 볼 수 있습니다.
 
-<!-- 📷 사진 자리 3: 최종 리포트 화면 (총평·강점·개선점) → assets/report.png -->
-![최종 리포트](assets/report.png)
+<img width="1240" height="940" alt="스크린샷 2026-07-09 003159" src="https://github.com/user-attachments/assets/ba8ae3f0-f8b5-4e8c-8a33-96363b323d8e" />
+
 
 ## 에이전트 설계 포인트
 
