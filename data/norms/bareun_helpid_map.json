@@ -1,0 +1,8 @@
+{
+  "_meta": {
+    "description": "BAREUN helpId → korean_norms.jsonl norm_id 수동 매핑. BAREUN help가 ruleArticle을 직접 제공하지 않는 helpId(주로 TYPO 계열)만 여기에 넣는다. ruleArticle이 있는 helpId는 norm_lookup이 자동으로 해석하므로 등록 불필요.",
+    "how_to_add": "스모크/실사용에서 ruleArticle 없는 helpId가 관찰되면, korean_norms.jsonl에서 해당 어문규범 조항의 norm_id를 찾아 한 줄 추가한다. 불확실하면 등록하지 않는다(잘못된 grounding보다 grounding 없음이 낫다).",
+    "norm_id_examples": ["hangul_spelling.ch1.art2", "hangul_spelling.ch4.art41"]
+  },
+  "map": {}
+}

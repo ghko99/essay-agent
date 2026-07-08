@@ -1,0 +1,7 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+torch>=2.4
+transformers>=4.48
+peft>=0.18
+accelerate>=0.34

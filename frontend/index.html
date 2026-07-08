@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>글결 · AI 에세이 채점</title>
+    <meta name="description" content="글결 — 한국어 에세이를 8개 기준으로 자동 채점하고 AI가 외부 도구로 교차 검증해 주는 서비스" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Pretendard는 Google Fonts에 없어 공식 CDN에서 로드한다 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap" /></noscript>
+    <link rel="stylesheet" href="/static/style.css?v=20260708-2" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#/">
+          <span class="brand-mark">글</span>
+          <span class="brand-name">글결</span>
+          <span class="brand-tag">AI 에세이 채점</span>
+        </a>
+        <nav class="nav-links">
+          <a href="#/" class="nav-link active" data-route="home">채점하기</a>
+          <a href="#/guide" class="nav-link" data-route="guide">채점 기준</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="progress-bar">
+      <div class="progress-inner">
+        <div class="step-pill active" data-step="1">
+          <span class="step-num">1</span>
+          <span class="step-text">논제 선택</span>
+        </div>
+        <div class="step-sep"></div>
+        <div class="step-pill" data-step="2">
+          <span class="step-num">2</span>
+          <span class="step-text">에세이 작성</span>
+        </div>
+        <div class="step-sep"></div>
+        <div class="step-pill" data-step="3">
+          <span class="step-num">3</span>
+          <span class="step-text">채점 결과</span>
+        </div>
+      </div>
+    </div>
+
+    <main class="page">
+      <!-- 논제 선택 -->
+      <section id="view-topic" class="view active">
+        <div class="view-head">
+          <h1>어떤 주제로 써 볼까요?</h1>
+          <p>학습된 전체 문항에서 원하는 논제를 선택하거나, 직접 입력할 수 있어요.</p>
+        </div>
+
+        <div class="type-tabs" id="type-tabs" role="tablist"></div>
+        <div class="type-desc" id="type-desc"></div>
+
+        <div class="topic-toolbar">
+          <div class="search-wrap">
+            <span class="search-ico">🔎</span>
+            <input id="topic-search" type="text" placeholder="논제·주제·과목으로 검색" />
+          </div>
+          <div class="filter-row">
+            <div class="filter-group" id="filter-subjects" aria-label="과목 필터"></div>
+            <div class="filter-group" id="filter-levels" aria-label="난이도 필터"></div>
+          </div>
+          <div class="topic-count" id="topic-count">—</div>
+        </div>
+
+        <div class="topic-scroll">
+          <div class="topic-grid" id="topic-grid"></div>
+          <div class="topic-empty" id="topic-empty" hidden>검색 결과가 없어요.</div>
+        </div>
+
+        <div class="custom-topic">
+          <div class="custom-topic-head">
+            <span class="divider-text">직접 입력</span>
+          </div>
+          <label class="field">
+            <span class="field-label">논제</span>
+            <input
+              id="custom-topic"
+              type="text"
+              placeholder="예) 인공지능 기술이 우리 삶에 미치는 영향에 대해 서술하세요"
+            />
+          </label>
+          <label class="field">
+            <span class="field-label">핵심 키워드 <em>선택</em></span>
+            <input
+              id="custom-keywords"
+              type="text"
+              placeholder="예) 편리함, 일자리, 윤리, 공존"
+            />
+          </label>
+          <button id="btn-custom-next" class="btn btn-primary" type="button">
+            이 논제로 쓰기
+          </button>
+        </div>
+      </section>
+
+      <!-- 에세이 작성 -->
+      <section id="view-write" class="view">
+        <div class="write-layout">
+          <div class="write-main">
+            <div class="write-head">
+              <button class="btn btn-ghost btn-back" id="btn-back-topic" type="button">← 논제 다시 고르기</button>
+              <div class="write-meta" id="write-meta"></div>
+            </div>
+
+            <div class="paper">
+              <div class="paper-head">
+                <h2 id="selected-topic">—</h2>
+                <div class="paper-keywords" id="selected-keywords"></div>
+              </div>
+              <textarea
+                id="essay"
+                class="paper-body"
+                placeholder="여기에 에세이를 작성해 주세요. 논제를 충실히 반영하고, 주장을 뒷받침할 수 있는 근거와 예시를 포함하면 좋아요."
+              ></textarea>
+              <div class="paper-foot">
+                <div class="counter" id="essay-counter">0자 · 0단어</div>
+                <div class="paper-foot-actions">
+                  <label class="switch">
+                    <input id="stream-toggle" type="checkbox" checked />
+                    <span class="switch-slider"></span>
+                    <span class="switch-label">샘플 진행 표시</span>
+                  </label>
+                  <button id="btn-submit" class="btn btn-primary" type="button">
+                    채점 · AI 검증 받기
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="write-side">
+            <div class="tip-card">
+              <div class="tip-card-head">
+                <span class="tip-ico">✎</span>
+                <h3>좋은 글을 쓰는 네 가지 습관</h3>
+              </div>
+              <ul class="tip-list">
+                <li><strong>논제 반영</strong> · 논제가 요구하는 내용을 빠짐없이 담아요.</li>
+                <li><strong>주장과 근거</strong> · 구체적인 예시를 들어 설득력을 높여요.</li>
+                <li><strong>흐름</strong> · 문단 사이를 자연스럽게 연결해요.</li>
+                <li><strong>표현</strong> · 맞춤법을 확인하고 다양한 어휘를 사용해요.</li>
+              </ul>
+            </div>
+
+            <div class="status-card" id="status-card" hidden>
+              <div class="status-ring"><div class="ring"></div></div>
+              <div>
+                <div class="status-title">채점 중이에요</div>
+                <div class="status-sub" id="status-sub">AI가 글을 읽고 있습니다…</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!-- 채점+AI검증 진행 패널 (완료되면 결과로 이동) -->
+        <div class="processing" id="processing" hidden>
+          <div class="proc-head">
+            <div class="audit-spinner"></div>
+            <span class="proc-title" id="proc-title">AI 검증관이 도구를 호출하는 중…</span>
+            <span class="activity-status" id="activity-status" hidden></span>
+          </div>
+          <div class="activity-feed" id="activity-feed"></div>
+          <div class="activity-think" id="activity-think" hidden></div>
+        </div>
+      </section>
+
+      <!-- 채점 기준 안내 -->
+      <section id="view-guide" class="view">
+        <div class="view-head">
+          <h1>채점 기준</h1>
+          <p>모든 에세이는 4개 영역(과제·내용·조직·표현), 8개 기준으로 채점돼요. 각 기준은 1~9점이고, 점수는 5단계 평가 기준에 대응해요.</p>
+        </div>
+        <div class="guide-levels" id="guide-levels"></div>
+        <div class="type-tabs" id="guide-type-tabs" role="tablist"></div>
+        <div class="type-desc" id="guide-type-desc"></div>
+        <div class="guide-grid" id="guide-grid"></div>
+        <div class="guide-loading" id="guide-loading"><div class="audit-spinner"></div><span>채점 기준을 불러오는 중…</span></div>
+      </section>
+
+      <!-- 채점 결과 -->
+      <section id="view-result" class="view">
+        <div class="result-head">
+          <button class="btn btn-ghost" id="btn-rewrite" type="button">← 다시 쓰기</button>
+          <div class="result-head-right">
+            <button class="btn btn-ghost" id="btn-new-topic" type="button">새 논제로 쓰기</button>
+          </div>
+        </div>
+
+        <div class="result-hero">
+          <div class="hero-left">
+            <div class="hero-topic-label">채점 논제</div>
+            <h2 id="result-topic">—</h2>
+
+            <div class="score-big">
+              <div class="score-big-num">
+                <span id="total-score">—</span>
+                <span class="score-big-max">/ 72점</span>
+              </div>
+              <div class="score-big-meta">
+                <span class="grade-badge" id="grade-badge">—</span>
+                <span class="score-pct" id="total-pct" hidden></span>
+                <span class="score-big-hint" id="total-hint">—</span>
+              </div>
+              <div class="hero-adjust" id="hero-adjust" hidden></div>
+            </div>
+
+            <div class="category-bars" id="category-bars">
+              <!-- four category meters injected -->
+            </div>
+          </div>
+
+          <div class="hero-right">
+            <div class="radar-wrap">
+              <canvas id="radar"></canvas>
+            </div>
+            <div class="hero-note" id="hero-note"></div>
+          </div>
+        </div>
+
+        <!-- AI 검증관 종합 리포트 (agent phase-3) -->
+        <div class="result-section" id="overall-report" hidden>
+          <div class="result-section-head">
+            <h3>AI 검증관 종합 리포트</h3>
+            <p>외부 도구 검증 결과를 종합한 총평·강점·개선 제안이에요.</p>
+          </div>
+          <div class="report-body" id="report-body"></div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-section-head">
+            <h3>항목별 피드백 <span class="audit-badge" id="criteria-badge" hidden>AI 보정 반영</span></h3>
+            <p>각 기준에 대한 평가와 개선 방향이에요.</p>
+          </div>
+          <div class="criteria-grid" id="criteria-grid"></div>
+        </div>
+
+        <!-- AI 교차 검증 (도구 호출 결과) — 접이식 -->
+        <details class="result-section collapse" id="audit-section" hidden>
+          <summary class="collapse-head">
+            <span class="collapse-title">AI 교차 검증 <span class="collapse-tag">도구 호출 결과</span></span>
+            <span class="collapse-sub">검증관이 외부 공식 도구로 채점을 교차검증한 내역이에요.</span>
+            <span class="collapse-chevron">▾</span>
+          </summary>
+          <div class="collapse-body">
+            <div class="audit-body" id="audit-body">
+              <div class="audit-compare" id="audit-compare"></div>
+              <div class="audit-tools" id="audit-tools"></div>
+              <div class="audit-flags" id="audit-flags"></div>
+            </div>
+          </div>
+        </details>
+
+        <!-- 초기 채점 결과 (AI 보정 전, 참고) -->
+        <details class="result-section collapse" id="ref-section" hidden>
+          <summary class="collapse-head">
+            <span class="collapse-title">초기 채점 결과 <span class="collapse-tag">AI 보정 전 · LoRA</span></span>
+            <span class="collapse-sub" id="ref-summary"></span>
+            <span class="collapse-chevron">▾</span>
+          </summary>
+          <div class="collapse-body">
+            <p class="ref-note">AI Agent가 외부 도구로 검증·보정하기 전, 채점 모델(LoRA)이 매긴 원래 점수예요.</p>
+            <div class="criteria-grid" id="ref-criteria-grid"></div>
+          </div>
+        </details>
+
+        <!-- 언어 분석 (형태소 · 의존구문 · 의미역) -->
+        <details class="result-section collapse" id="linguistic-section" hidden>
+          <summary class="collapse-head">
+            <span class="collapse-title">언어 분석 <span class="collapse-tag">형태소 · 의존구문 · 의미역</span></span>
+            <span class="collapse-sub">펼치면 ETRI 언어분석으로 문장 구조를 시각화해요.</span>
+            <span class="collapse-chevron">▾</span>
+          </summary>
+          <div class="collapse-body">
+            <div class="ling-loading" id="ling-loading" hidden>
+              <div class="audit-spinner"></div><span>ETRI로 문장 구조를 분석하는 중…</span>
+            </div>
+            <div class="ling-error" id="ling-error" hidden></div>
+            <div class="ling-body" id="ling-body"></div>
+          </div>
+        </details>
+
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="foot-inner">
+        <span>© 글결 · AI Essay Scoring</span>
+        <span class="foot-sep">·</span>
+        <span>한국어 에세이 8개 기준 자동 채점</span>
+      </div>
+    </footer>
+
+    <!-- 도구 상세 모달 -->
+    <div class="modal-overlay" id="tool-modal" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-head">
+          <span class="modal-ico" id="modal-ico">•</span>
+          <h3 class="modal-title" id="modal-title">도구 상세</h3>
+          <button class="modal-close" id="modal-close" type="button" aria-label="닫기">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" hidden></div>
+    <script src="/static/app.js?v=20260708-3" defer></script>
+  </body>
+</html>
