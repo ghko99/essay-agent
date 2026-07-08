@@ -71,7 +71,7 @@
 
 ## 기술 스택
 
-- **채점 모델**: [kanana-1.5-8b-instruct-2505](https://huggingface.co/kakaocorp/kanana-1.5-8b-instruct-2505) + LoRA 어댑터 (AI Hub 에세이 글 평가 데이터로 파인튜닝)
+- **채점 모델**: [kanana-1.5-8b-instruct-2505](https://huggingface.co/kakaocorp/kanana-1.5-8b-instruct-2505) + LoRA 어댑터 (AI Hub AI Hub 논술형·서술형·주제별 글쓰기 평가 데이터로 파인튜닝)
 - **추론 서버**: vLLM (AsyncLLMEngine, 요청 단위 LoRA on/off — 채점은 LoRA ON, 에이전트는 베이스 모델)
 - **백엔드**: FastAPI (전 구간 async, SSE 스트리밍)
 - **프론트엔드**: Vanilla JS SPA (프레임워크 없음)
@@ -115,4 +115,4 @@ essay_agent/
 
 ## 데이터 출처
 
-- 채점 모델 학습: [AI Hub 에세이 글 평가 데이터](https://aihub.or.kr) (라이선스 정책상 원본 데이터는 저장소에 포함하지 않음)
+- 채점 모델 학습: [AI Hub 논술형·서술형·주제별 글쓰기 평가 데이터](https://aihub.or.kr) (라이선스 정책상 원본 데이터는 저장소에 포함하지 않음)
