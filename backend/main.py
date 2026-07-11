@@ -425,3 +425,11 @@ if FRONTEND_DIR.exists():
     @app.get("/")
     def index():
         return FileResponse(str(FRONTEND_DIR / "index.html"))
+
+    @app.get("/robots.txt", include_in_schema=False)
+    def robots():
+        return FileResponse(str(FRONTEND_DIR / "robots.txt"), media_type="text/plain")
+
+    @app.get("/sitemap.xml", include_in_schema=False)
+    def sitemap():
+        return FileResponse(str(FRONTEND_DIR / "sitemap.xml"), media_type="application/xml")
