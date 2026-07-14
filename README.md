@@ -1,118 +1,130 @@
-# 글결 — 한국어 에세이 자동 채점 에이전트
+# Geulgyeol — Automated Korean Essay Scoring Agent
 
-> LoRA 파인튜닝 채점 모델과 도구 기반 검증 에이전트가 함께 채점하는 한국어 에세이 평가 웹 서비스
+![License](https://img.shields.io/github/license/ghko99/essay-agent)
+![Stars](https://img.shields.io/github/stars/ghko99/essay-agent?style=social)
+![Issues](https://img.shields.io/github/issues/ghko99/essay-agent)
 
-**데모**: https://geulgyeol.tech
+> **Geulgyeol** (Korean for "Texture of Text") is an Automated Essay Scoring Agent. It evaluates essays using a LoRA fine-tuned model and a tool-augmented verification agent.
 
-<img width="1182" height="941" alt="스크린샷 2026-07-09 003512" src="https://github.com/user-attachments/assets/7204bae3-17f9-4733-a417-0dc6a5607cf3" />
+**Demo**: https://geulgyeol.tech
 
-## 소개
+<img width="1182" height="941" alt="Screenshot" src="https://github.com/user-attachments/assets/7204bae3-17f9-4733-a417-0dc6a5607cf3" />
 
-**글결**은 학생이 쓴 에세이를 8개 채점 기준(루브릭)으로 평가하고, 점수의 근거를 증거와 함께 설명해 주는 자동 채점 서비스입니다. 단순히 점수만 내는 것이 아니라, AI 에이전트가 맞춤법 검사기·국어사전·언어 분석 API 같은 실제 도구로 글을 측정한 뒤 **왜 이 점수인지**를 리포트로 제시합니다.
+## 🌟 Introduction
 
-## 채점 과정
+**Geulgyeol** is an automated scoring service that evaluates student essays based on 8 rubrics and provides detailed feedback with evidence. Rather than just assigning a score, an AI agent utilizes real-world tools—such as a spell checker, dictionary, and language analysis API—to measure the text and present a comprehensive report explaining **why** the score was given.
 
+## ⚙️ Scoring Pipeline
+
+```text
+Essay Input
+   │
+   ▼
+① Ensemble Scoring (LoRA Fine-tuned Model)
+   └─ 8 Rubrics × 1~9 Points, Weighted Self-Consistency Ensemble
+   │
+   ▼
+② Agent Verification (Base Model + External Tools)
+   └─ Independently measures keyword fulfillment, spelling, vocabulary validity, 
+      and technical terms via tools → Evidence-based independent scoring → Score calibration (±3)
+   │
+   ▼
+③ Final Report
+   └─ Overall Review · Strengths · Areas for Improvement · Rubric Scores and Calibration Evidence
 ```
-에세이 입력
-   │
-   ▼
-① 앙상블 채점 (LoRA 파인튜닝 모델)
-   └─ 8개 루브릭 × 1~9점, 가중 자기일관성 앙상블
-   │
-   ▼
-② 에이전트 검증 (베이스 모델 + 외부 도구)
-   └─ 키워드 충족도·맞춤법·어휘 실재성·전문용어 검증 등을
-      도구로 직접 측정 → 증거 기반 독립 채점 → 점수 보정(±3)
-   │
-   ▼
-③ 최종 리포트
-   └─ 총평 · 강점 · 개선점 · 루브릭별 점수와 보정 근거
-```
-<img width="1240" height="943" alt="스크린샷 2026-07-09 003631" src="https://github.com/user-attachments/assets/7783ca8f-6a47-47f4-8496-5d397ad635aa" />
+<img width="1240" height="943" alt="Screenshot" src="https://github.com/user-attachments/assets/7783ca8f-6a47-47f4-8496-5d397ad635aa" />
 
 
-## 채점 기준 (8개 루브릭)
+## 📊 Scoring Rubrics (8 Categories)
 
-| 영역 | 루브릭 | 평가 내용 |
+| Category | Rubric | Evaluation Criteria |
 |---|---|---|
-| 과제 | 과제충실성 | 논제 요구에 맞게 썼는가 |
-| 내용 | 설명명료성 | 설명이 분명한가 |
-| 내용 | 설명구체성 | 구체적 근거·예시가 있는가 |
-| 내용 | 설명적절성 | 내용이 주제에 적절한가 |
-| 조직 | 문장연결성 | 문장·문단이 자연스럽게 이어지는가 |
-| 조직 | 글통일성 | 글 전체가 하나의 주제로 통일되는가 |
-| 표현 | 어휘적절성 | 어휘 선택이 적절한가 |
-| 표현 | 어법적절성 | 맞춤법·어법이 올바른가 |
+| Task | Task Fulfillment | Does the essay meet the prompt's requirements? |
+| Content | Clarity of Explanation | Is the explanation clear? |
+| Content | Specificity of Explanation | Are there specific evidence and examples? |
+| Content | Relevance of Explanation | Is the content relevant to the topic? |
+| Organization | Sentence Connectivity | Do sentences and paragraphs flow naturally? |
+| Organization | Text Unity | Is the entire text unified under a single topic? |
+| Expression | Vocabulary Appropriateness | Is the vocabulary selection appropriate? |
+| Expression | Grammatical Appropriateness | Are spelling and grammar correct? |
 
-각 루브릭은 1~9점으로 채점되며, 사이트의 **채점기준** 페이지에서 단계별 기준을 볼 수 있습니다.
+Each rubric is scored from 1 to 9. Detailed criteria for each level can be found on the **Scoring Criteria** page of the demo site.
 
-<img width="1240" height="940" alt="스크린샷 2026-07-09 003159" src="https://github.com/user-attachments/assets/ba8ae3f0-f8b5-4e8c-8a33-96363b323d8e" />
+<img width="1240" height="940" alt="Screenshot" src="https://github.com/user-attachments/assets/ba8ae3f0-f8b5-4e8c-8a33-96363b323d8e" />
 
 
-## 에이전트 설계 포인트
+## 🧠 Agent Design Points
 
-8B 모델로 "점수 검증"을 시키면 원 점수를 그대로 베끼는 **앵커링 문제**가 생깁니다. 글결은 이를 다음과 같이 해결했습니다.
+Using an 8B model for "score verification" often results in an **anchoring problem** where the model simply copies the original score. Geulgyeol solves this through the following approaches:
 
-- **점수 완전 은닉**: 검증 단계에서 에이전트에게 LoRA 점수를 일절 보여주지 않고, 도구 측정값만으로 독립 채점하게 함
-- **단계-우선 채점**: 근거 서술 → 단계(1~5) 판단 → 단계에 해당하는 점수 범위 안에서 점수 확정 (근거↔점수 모순과 중간값 도피를 차단)
-- **사후 보정 제한**: 독립 채점 결과를 LoRA 점수 기준 ±3으로 클램프하여 안정성 확보
-- **리포트 단계에서만 대조 공개**: 점수가 확정된 뒤에야 원 점수와 비교해 보정 근거를 설명
+- **Complete Score Concealment**: During the verification stage, the LoRA score is completely hidden from the agent. The agent scores independently using only tool measurements.
+- **Step-First Scoring**: The agent must write the evidence first → determine the level (1-5) → and finalize the score within the range corresponding to that level. This prevents contradictions between evidence and score, as well as middle-value escaping.
+- **Post-Calibration Limits**: Independent scoring results are clamped to within ±3 points of the original LoRA score to ensure stability.
+- **Comparison Revealed Only in Report**: The original score and the calibrated score are only compared after the final score is determined, to explain the calibration evidence to the user.
 
-## 사용 도구 (외부 API)
+## 🛠 External APIs (Tools)
 
-| 도구 | 용도 |
+| Tool | Purpose |
 |---|---|
-| 키워드 충족도 | 논제 핵심 키워드가 글에 있는지 측정 |
-| 맞춤법 검사 (바른) | 맞춤법·띄어쓰기 오류 탐지 |
-| 국어사전 (우리말샘 등) | 어휘가 실재하는 단어인지 검증 |
-| 전문용어 검증 (K-term) | 전문용어의 정확한 사용 확인 |
-| ETRI 언어 분석 | 형태소·의존 구문·의미역 분석 |
-| 퍼플렉시티 측정 | 문장 자연스러움 측정 (자체 모델) |
+| Keyword Fulfillment | Measures if the prompt's key terms are present in the text |
+| Spell Checker (Bareun) | Detects spelling and spacing errors |
+| Korean Dictionary | Verifies if the vocabulary consists of real words |
+| Tech Term Verification | Checks the accurate use of professional/technical terms |
+| ETRI Language Analysis | Morpheme, dependency parsing, and semantic role labeling |
+| Perplexity Measurement | Measures sentence naturalness (custom model) |
 
-## 기술 스택
+## 💻 Tech Stack
 
-- **채점 모델**: [kanana-1.5-8b-instruct-2505](https://huggingface.co/kakaocorp/kanana-1.5-8b-instruct-2505) + LoRA 어댑터 (AI Hub AI Hub 논술형·서술형·주제별 글쓰기 평가 데이터로 파인튜닝)
-- **추론 서버**: vLLM (AsyncLLMEngine, 요청 단위 LoRA on/off — 채점은 LoRA ON, 에이전트는 베이스 모델)
-- **백엔드**: FastAPI (전 구간 async, SSE 스트리밍)
-- **프론트엔드**: Vanilla JS SPA (프레임워크 없음)
-- **배포**: 로컬 GPU 서버(RTX 4090) + Cloudflare Tunnel
+- **Scoring Model**: [kanana-1.5-8b-instruct-2505](https://huggingface.co/kakaocorp/kanana-1.5-8b-instruct-2505) + LoRA Adapter (Fine-tuned on AI Hub Essay/Descriptive Writing Data)
+- **Inference Server**: vLLM (AsyncLLMEngine, Request-level LoRA on/off — LoRA ON for scoring, Base Model for the agent)
+- **Backend**: FastAPI (Fully async, SSE Streaming)
+- **Frontend**: Vanilla JS SPA (No framework)
+- **Deployment**: Local GPU Server (RTX 4090) + Cloudflare Tunnel
 
-## 실행 방법
+## 🚀 Getting Started
 
 ```bash
-# 1. 의존성 설치 (Python 3.10, CUDA GPU 필요)
+# 1. Install Dependencies (Requires Python 3.10 and CUDA GPU)
 pip install -r requirements.txt
 
-# 2. 베이스 모델 준비 (HuggingFace에서 다운로드)
-#    기본 경로: /home/<user>/models/kanana  (KANANA_BASE 환경변수로 변경 가능)
+# 2. Prepare Base Model (Download from HuggingFace)
+#    Default path: /home/<user>/models/kanana (Can be changed via KANANA_BASE env variable)
 
-# 3. 외부 API 키 설정 (.env 파일 생성)
+# 3. Configure External API Keys (Create a .env file)
 #    OPENDICT_API_KEY, KRD_API_KEY, KTERM_API_KEY,
 #    ETRI_API_KEY, ETRI_WISENLU_URL, BAREUN_API_KEY
 
-# 4. 서버 실행
+# 4. Run Server
 KANANA_BASE=/path/to/kanana ./run.sh
 # → http://localhost:8000
 ```
 
-LoRA 어댑터(`adapter/`)는 Git LFS로 관리됩니다. clone 시 `git lfs pull`이 필요합니다.
+The LoRA adapter (`adapter/`) is managed with Git LFS. You must run `git lfs pull` after cloning.
 
-## 프로젝트 구조
+## 📁 Project Structure
 
-```
+```text
 essay_agent/
 ├── backend/
-│   ├── main.py        # FastAPI 엔드포인트 (채점·검증·리포트 SSE)
-│   ├── model.py       # vLLM 엔진, 앙상블 채점, LoRA 토글
-│   ├── agent.py       # 검증 에이전트 (도구 루프·독립 채점·리포트)
-│   ├── rubric.py      # 8개 루브릭 정의
-│   └── tools/         # 외부 API 도구 (키워드·맞춤법·사전·용어·ETRI)
+│   ├── main.py        # FastAPI endpoints (Scoring, Verification, Report SSE)
+│   ├── model.py       # vLLM Engine, Ensemble Scoring, LoRA Toggle
+│   ├── agent.py       # Verification Agent (Tool Loop, Independent Scoring, Report)
+│   ├── rubric.py      # 8 Rubrics Definition
+│   └── tools/         # External API Tools (Keyword, Spelling, Dictionary, Term, ETRI)
 ├── frontend/          # SPA (index.html, app.js, style.css)
-├── data/              # 루브릭 기준, 논제, 점수 분포, 규범 데이터
-├── adapter/           # LoRA 가중치 (Git LFS)
-└── run.sh             # 실행 스크립트
+├── data/              # Rubric criteria, prompts, score distributions, normative data
+├── adapter/           # Large LoRA weights (Git LFS)
+└── run.sh             # Execution script
 ```
 
-## 데이터 출처
+## 📚 Data Source
 
-- 채점 모델 학습: [AI Hub 논술형·서술형·주제별 글쓰기 평가 데이터](https://aihub.or.kr) (라이선스 정책상 원본 데이터는 저장소에 포함하지 않음)
+- Scoring Model Training: [AI Hub Essay, Descriptive, and Thematic Writing Evaluation Data](https://aihub.or.kr). (Due to licensing, the raw data is not included in this repository).
+
+## 🤝 Contributing
+
+This project is open-source, and contributions are welcome! We appreciate bug reports, feature improvement ideas, and Pull Requests.
+
+## 📄 License
+
+This project is distributed under the MIT License. For more details, see the `LICENSE` file.
