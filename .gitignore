@@ -9,6 +9,7 @@ server.log
 # 로컬 전용 운영 문서 (GitHub 미공개)
 DEPLOY.md
 .agents/
+chatgpt_pro_application_draft.md
 
 # 대용량·재배포 불가 자산 (GitHub 100MB 파일 제한 + 데이터 라이선스)
 raw_datasets/
