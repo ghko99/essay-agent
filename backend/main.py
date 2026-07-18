@@ -426,6 +426,10 @@ if FRONTEND_DIR.exists():
     def index():
         return FileResponse(str(FRONTEND_DIR / "index.html"))
 
+    @app.get("/favicon.ico", include_in_schema=False)
+    def favicon():
+        return FileResponse(str(FRONTEND_DIR / "favicon.ico"), media_type="image/x-icon")
+
     @app.get("/robots.txt", include_in_schema=False)
     def robots():
         return FileResponse(str(FRONTEND_DIR / "robots.txt"), media_type="text/plain")
