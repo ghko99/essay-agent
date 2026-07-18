@@ -14,6 +14,9 @@ apply.md
 .agents/
 chatgpt_pro_application_draft.md
 
+# 학습된 LoRA 어댑터 가중치 (비공개 — 서비스 핵심 자산)
+adapter/
+
 # 대용량·재배포 불가 자산 (GitHub 100MB 파일 제한 + 데이터 라이선스)
 raw_datasets/
 raw_datasets.zip
